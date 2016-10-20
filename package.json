@@ -1,0 +1,43 @@
+{
+  "name": "Sky-Pie",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanielC2008/Sky-Pie.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DanielC2008/Sky-Pie/issues"
+  },
+  "homepage": "https://github.com/DanielC2008/Sky-Pie#readme",
+  "devDependencies": {
+    "browserify": "^13.1.0",
+    "gulp": "^3.9.1",
+    "gulp-jshint": "^2.0.1",
+    "gulp-sourcemaps": "^2.1.1",
+    "gulp-util": "^3.0.7",
+    "gulp-watch": "^4.3.10",
+    "jshint": "^2.9.3",
+    "jshint-stylish": "^2.2.1",
+    "lodash.assign": "^4.2.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0"
+  },
+  "dependencies": {
+    "express": "^4.14.0",
+    "materialize": "^1.0.0",
+    "pug": "^2.0.0-beta6",
+    "rtc-everywhere": "0.0.5",
+    "socket.io": "^1.5.0",
+    "twilio": "^2.11.0",
+    "wrtc": "0.0.61"
+  }
+}
