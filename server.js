@@ -9,16 +9,17 @@ const server = Server(app)
 const io = socketio(server)
 const PORT = process.env.PORT || 3000
 const Users = []
+
 //SET
-app.set('views', './views')
-app.set('view engine', 'pug')
+
 
 
 //USE
 app.use(express.static('public'))
 
 //ROUTES
-app.get('/', (req, res) => res.render('index'))
+
+
 
 //SOCKETS
 io.on('connection', socket => {

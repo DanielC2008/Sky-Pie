@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sky-Pie</title>
+  </head>
+  <body>
+    <div ng-app="mean101">
+      <div ng-controller="main">
+        <h1>{{title}}</h1>
+        <h2>Welcome {{user}}!</h2>
+      </div>
+      <video id="local-video" height="150" autoplay></video>
+      <video id="remote-video" height="150" autoplay></video>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/bundle.js"></script>
+  </body>
+</html>

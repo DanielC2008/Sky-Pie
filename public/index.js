@@ -2,7 +2,6 @@
 
 const socket = io()
 
-
 socket.on('new user', Users => {
 	console.log(Users);
 })

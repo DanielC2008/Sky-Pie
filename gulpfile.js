@@ -23,7 +23,7 @@ var handleError = function(task) {
 };
 
 var customOpts = {
-  entries: ['./public/app.js'],
+  entries: ['./public/app/main.js'],
   debug: true //creates readable 'source maps' of code
 };
 var opts = assign({}, watchify.args, customOpts);
@@ -51,7 +51,7 @@ gulp.task('browserify', bundle);
   Not optional. You should always be validating your JavaScript
  */
 gulp.task('lint', function() {
-  return gulp.src(['./app.js'])
+  return gulp.src(['./app.main.js'])
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'))
     .on('error', function() { });
@@ -64,7 +64,7 @@ gulp.task('lint', function() {
  */
 gulp.task('watch', function() {
   // Run the link task when any JavaScript file changes
-  gulp.watch(['./app.js'], ['lint']);
+  gulp.watch(['./app/main.js'], ['lint']);
   gutil.log(gutil.colors.bgGreen('Watching for changes...'));
 });
 
