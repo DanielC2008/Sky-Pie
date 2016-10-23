@@ -34,10 +34,20 @@ angular
     }
     
 
-	socket.on('connect', () => {
-	    $scope.user = socket.id
-	    $scope.$apply()
-	  })
+  	socket.on('connect', () => {
+  	  $scope.socket = socket.id
+  	  $scope.$apply()
+  	})
+
+    socket.on('new user', (Users) => {
+      $scope.Users = Users
+      $scope.$apply()
+    })
+
+    socket.on('user disconnect', (Users) => {
+      $scope.Users = Users
+      $scope.$apply()
+    })
 
 
   })

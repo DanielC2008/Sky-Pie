@@ -23,10 +23,15 @@ app.use(express.static('client'))
 
 //SOCKETS
 io.on('connection', socket => {
+	console.log(`Socket connected on: ${socket.id}`)
+
 	Users.push(socket.id)
 	io.emit('new user', Users)
 
-	console.log(`Socket connected on: ${socket.id}`)
+	socket.on('join', (room) => {
+		socket.join(`${room}`)
+	})
+
 
 	socket.on('disconnect', () => {
 		let removeUser = Users.indexOf(`${socket.id}`)
