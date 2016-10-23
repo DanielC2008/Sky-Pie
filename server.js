@@ -24,12 +24,16 @@ app.use(express.static('client'))
 //SOCKETS
 io.on('connection', socket => {
 	console.log(`Socket connected on: ${socket.id}`)
-
 	Users.push(socket.id)
 	io.emit('new user', Users)
 
-	socket.on('join', (room) => {
-		socket.join(`${room}`)
+	socket.on('call', socketToCall => { 
+		socket.broadcast.to(socketToCall).emit('answer or reject', socket.id);
+	})
+
+	socket.on('join', callersRoom => {
+		socket.join(callersRoom)
+		io.to(callersRoom).emit('room ready')
 	})
 
 

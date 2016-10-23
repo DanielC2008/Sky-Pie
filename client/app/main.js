@@ -34,19 +34,44 @@ angular
     }
     
 
+    $scope.callUser = socketToCall => {
+      socket.emit('call', socketToCall)
+    }
+
+
+    $scope.joinRoom = (caller) => {
+      socket.emit('join', caller)
+      $scope.call = null
+    }
+
+    $scope.rejectCall = (caller) => {
+      //emit rejected call
+      $scope.call = null
+    }
+
   	socket.on('connect', () => {
   	  $scope.socket = socket.id
   	  $scope.$apply()
   	})
 
-    socket.on('new user', (Users) => {
+    socket.on('new user', Users => {
       $scope.Users = Users
       $scope.$apply()
     })
 
-    socket.on('user disconnect', (Users) => {
+    socket.on('user disconnect', Users => {
       $scope.Users = Users
       $scope.$apply()
+    })
+
+    socket.on('answer or reject', caller => {
+      $scope.caller = caller
+      $scope.call = `${$scope.caller} would like to start a Sky-Pie Call with you!`
+      $scope.$apply()
+    })
+
+    socket.on('room ready', () => {
+      console.log("YEA")
     })
 
 
