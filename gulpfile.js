@@ -23,7 +23,7 @@ var handleError = function(task) {
 };
 
 var customOpts = {
-  entries: ['./public/app/main.js'],
+  entries: ['./client/app/main.js'],
   debug: true //creates readable 'source maps' of code
 };
 var opts = assign({}, watchify.args, customOpts);
@@ -42,7 +42,7 @@ function bundle() {
     .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
        // Add transformation tasks to the pipeline here.
     .pipe(sourcemaps.write('./')) // writes .map file
-    .pipe(gulp.dest('./public'));
+    .pipe(gulp.dest('./client'));
 }
 gulp.task('browserify', bundle);
 

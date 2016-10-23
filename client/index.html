@@ -4,13 +4,14 @@
     <title>Sky-Pie</title>
   </head>
   <body>
-    <div ng-app="mean101">
+    <div ng-app="Sky-Pie">
       <div ng-controller="main">
         <h1>{{title}}</h1>
         <h2>Welcome {{user}}!</h2>
-      </div>
       <video id="local-video" height="150" autoplay></video>
       <video id="remote-video" height="150" autoplay></video>
+      <button ng-click='getUserMedia()'>Media</button>
+      </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
