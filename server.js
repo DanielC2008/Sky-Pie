@@ -3,12 +3,14 @@
 const express = require('express')
 const { Server } = require('http')
 const socketio = require('socket.io')
+const twilio = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN)
 
 const app = express()
 const server = Server(app)
 const io = socketio(server)
 const PORT = process.env.PORT || 3000
 const Users = []
+let room
 
 //SET
 
@@ -32,13 +34,28 @@ io.on('connection', socket => {
 	})
 
 	socket.on('join', callersRoom => {
+		room = callersRoom
 		socket.join(callersRoom)
-		io.to(callersRoom).emit('room ready')
+		socket.broadcast.to(callersRoom).emit('room ready')
 	})
 
 	socket.on('call rejected', caller => {
 		socket.broadcast.to(caller).emit('call rejected');
 	})
+
+  socket.on('getTokens', () => {
+    twilio.tokens.create((err, response) =>{
+      if(err){
+        console.log(err);
+      } else {
+        socket.emit('tokens', response);
+      }
+    })
+  })
+
+  socket.on('candidate', (candidate) => {
+    socket.broadcast.to(room).emit('candidate', candidate);
+  });  
 
 	socket.on('disconnect', () => {
 		let removeUser = Users.indexOf(`${socket.id}`)
