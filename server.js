@@ -36,6 +36,9 @@ io.on('connection', socket => {
 		io.to(callersRoom).emit('room ready')
 	})
 
+	socket.on('call rejected', caller => {
+		socket.broadcast.to(caller).emit('call rejected');
+	})
 
 	socket.on('disconnect', () => {
 		let removeUser = Users.indexOf(`${socket.id}`)
