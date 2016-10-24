@@ -30,7 +30,7 @@ io.on('connection', socket => {
 	io.emit('new user', Users)
 
 	socket.on('call', socketToCall => { 
-		socket.broadcast.to(socketToCall).emit('answer or reject', socket.id);
+		socket.broadcast.to(socketToCall).emit('answer or reject', socket.id)
 	})
 
 	socket.on('join', callersRoom => {
@@ -40,22 +40,30 @@ io.on('connection', socket => {
 	})
 
 	socket.on('call rejected', caller => {
-		socket.broadcast.to(caller).emit('call rejected');
+		socket.broadcast.to(caller).emit('call rejected')
 	})
 
-  socket.on('getTokens', () => {
+  socket.on('get tokens', () => {
+  	console.log('tokens')
     twilio.tokens.create((err, response) =>{
       if(err){
-        console.log(err);
+        console.log(err)
       } else {
-        socket.emit('tokens', response);
+      	let offerOrAnswer = socket.id === room ? 'offer tokens' : 'answer tokens'
+      	console.log("tokes?", offerOrAnswer)
+        socket.emit(`${offerOrAnswer}`, response)
       }
     })
   })
 
+  socket.on('offer', (offer) => {
+  	console.log(offer)
+    socket.broadcast.to(room).emit('offer', offer) //check this broadcast
+  })
+
   socket.on('candidate', (candidate) => {
-    socket.broadcast.to(room).emit('candidate', candidate);
-  });  
+    socket.broadcast.to(room).emit('candidate', candidate) //check this broadcast
+  })  
 
 	socket.on('disconnect', () => {
 		let removeUser = Users.indexOf(`${socket.id}`)
