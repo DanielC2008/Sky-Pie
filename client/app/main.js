@@ -186,9 +186,14 @@ angular
 
     socket.on('end call button', socketToRemove => {
       console.log('here')
+      if (socketToRemove === socket.id) {
+              console.log('remove')
+
+      socket.emit('end call button', socketToRemove)
+        
+      }
       $scope.inCall = false
       $scope.$apply()
-      socket.emit('end call button', socketToRemove)
     })
 
 
