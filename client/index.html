@@ -14,7 +14,10 @@
         </h3>
         <div>
           <video id="local-video" height="150" autoplay></video>
+        </div>
+        <div ng-show="inCall">
           <video id="remote-video" height="150" autoplay></video>
+          <button ng-click="endCall()"> </button>
         </div>
         <div>
           <button ng-click="getUserMedia()">Allow Video</button>

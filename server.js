@@ -54,6 +54,10 @@ io.on('connection', socket => {
     })
   })
 
+  socket.on('candidate', (candidate) => {
+    socket.broadcast.to(room).emit('candidate', candidate) 
+  })  
+
   socket.on('offer', offer => {
   	twilio.tokens.create((err, response) =>{
       if(err){
@@ -70,11 +74,12 @@ io.on('connection', socket => {
 
   socket.on('answer', answer => {
     socket.broadcast.to(room).emit('answer', answer)
-  });
+  })
 
-  socket.on('candidate', (candidate) => {
-    socket.broadcast.to(room).emit('candidate', candidate) 
-  })  
+  socket.on('both users configured', () => {
+  	io.to(room).emit('in call')
+  })
+
 
 	socket.on('disconnect', () => {
 		let removeUser = Users.indexOf(`${socket.id}`)

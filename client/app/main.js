@@ -14,6 +14,7 @@ angular
     let localStream
     let streamUrl
 
+    $scope.inCall = false
     $scope.title = 'Sky-Pie'
 
     //get user media
@@ -89,32 +90,35 @@ angular
     }
 
     const createOffer = () => {
-        peerConnection.createOffer((offer) => { ///////////////////////make promise structure
-          peerConnection.setLocalDescription(offer)
-          socket.emit('offer', JSON.stringify(offer)) // no stringify
-        },
-        (err) => {
-          console.log(err)
-        })
+      peerConnection.createOffer((offer) => { ///////////////////////make promise structure
+        peerConnection.setLocalDescription(offer)
+        socket.emit('offer', JSON.stringify(offer)) // no stringify
+      },
+      (err) => {
+        console.log(err)
+      })
     }
 
 
     const createAnswer = (offer) => {
-        let sessionDescription = new RTCSessionDescription(JSON.parse(offer))
-        peerConnection.setRemoteDescription(sessionDescription)
-        peerConnection.createAnswer( answer => { ///////////////////////make promise structure
-          peerConnection.setLocalDescription(answer)
-          socket.emit('answer', JSON.stringify(answer))
-        },
-        (err) => {
-          console.log(err)
-        })
+      let sessionDescription = new RTCSessionDescription(JSON.parse(offer))
+      peerConnection.setRemoteDescription(sessionDescription)
+      peerConnection.createAnswer( answer => { ///////////////////////make promise structure
+        peerConnection.setLocalDescription(answer)
+        socket.emit('answer', JSON.stringify(answer))
+      },
+      (err) => {
+        console.log(err)
+      })
     }
 
     const onAnswer = answer => {
-      var rtcAnswer = new RTCSessionDescription(JSON.parse(answer))
+      let rtcAnswer = new RTCSessionDescription(JSON.parse(answer))
       peerConnection.setRemoteDescription(rtcAnswer)
+      socket.emit('both users configured')
     }
+
+
 
 
 
@@ -172,6 +176,9 @@ angular
       onAnswer(answer)
     })
 
-
+    socket.on('in call', () => {
+      $scope.inCall = true
+      $scope.$apply()
+    })
 
   })
