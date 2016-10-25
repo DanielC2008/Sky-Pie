@@ -18,7 +18,7 @@ angular
     $scope.title = 'Sky-Pie'
 
     //get user media
-    $scope.getUserMedia = () => {
+    const getUserMedia = () => {
       rtc.getUserMedia( (err, stream) => {
         if (stream) {
           onStream(stream)
@@ -44,6 +44,7 @@ angular
 
     //called accepts and joins room
     $scope.joinRoom = (caller) => {
+      getUserMedia()
       socket.emit('join', caller)
       $scope.call = null
     }
@@ -158,6 +159,7 @@ angular
 //connecting video stream
     //room ready
     socket.on('room ready', () => {
+      getUserMedia()
       startCall()
     })
     //tokens have been generated
@@ -185,12 +187,8 @@ angular
     })
 
     socket.on('end call button', socketToRemove => {
-      console.log('here')
       if (socketToRemove === socket.id) {
-              console.log('remove')
-
-      socket.emit('end call button', socketToRemove)
-        
+        socket.emit('end call button', socketToRemove)
       }
       $scope.inCall = false
       $scope.$apply()

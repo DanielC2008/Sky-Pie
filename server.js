@@ -81,7 +81,6 @@ io.on('connection', socket => {
   })
 
   socket.on('end call button', socketToRemove => { 
-  	console.log('before', io.sockets.adapter.rooms)
  		//only remove socket that was called NOT caller
  		//if called remove
   	if (socket.id === socketToRemove) {
@@ -89,8 +88,6 @@ io.on('connection', socket => {
   	}
   	//emit to other user to leave room/update dom	
     socket.broadcast.to(room).emit('end call button', socketToRemove)
-    console.log('after', io.sockets.adapter.rooms)
-
   })
 
 	socket.on('disconnect', () => {
