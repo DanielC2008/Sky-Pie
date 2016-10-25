@@ -18,7 +18,6 @@ let room
 
 //USE
 app.use(express.static('client'))
-
 //ROUTES
 
 
@@ -80,6 +79,16 @@ io.on('connection', socket => {
   	io.to(room).emit('start call')
   })
 
+  socket.on('end call button', socketToRemove => { 
+ 		//only remove socket that was called NOT caller
+ 		//if called remove
+  	if (socket.id === socketToRemove) {
+  		socket.leave(room)
+  	//else emit to other user to leave room	
+  	} else {
+    	socket.broadcast.to(room).emit('end call button', socketToRemove)
+  	}
+  })
 
 	socket.on('disconnect', () => {
 		let removeUser = Users.indexOf(`${socket.id}`)

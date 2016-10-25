@@ -23,7 +23,8 @@ angular
         if (stream) {
           onStream(stream)
         } else {
-  		    streamRejected(err)
+          console.log(err)
+  		    alert('Media Rejected')
         }
       })
 	  }
@@ -34,13 +35,10 @@ angular
       localVideo.src = window.URL.createObjectURL(stream)
     }
 
-    //user rejected request or err
-    const streamRejected = () => {
-    	console.log('media rejected')
-    }
-
     //socket requests another to join their room   
     $scope.callUser = socketToCall => {
+      $scope.caller = socket.id
+      $scope.called = socketToCall
       socket.emit('call', socketToCall)
     }
 
@@ -118,7 +116,10 @@ angular
       socket.emit('both users configured')
     }
 
-
+    $scope.endCallButton = () => {
+      socket.emit('end call button', $scope.called)
+      $scope.inCall = false
+    }
 
 
 
@@ -136,6 +137,7 @@ angular
 
     //user disconnects from server
     socket.on('user disconnect', Users => {
+      $scope.inCall = false
       $scope.Users = Users
       $scope.$apply()
     })
@@ -143,6 +145,7 @@ angular
     //someone is called
     socket.on('answer or reject', caller => {
       $scope.caller = caller
+      $scope.called = socket.id
       $scope.call = `${$scope.caller} would like to start a Sky-Pie Call with you!`
       $scope.$apply()
     })
@@ -181,10 +184,13 @@ angular
       $scope.$apply()
     })
 
-    socket.on('end call', () => {
+    socket.on('end call button', socketToRemove => {
+      console.log('here')
       $scope.inCall = false
       $scope.$apply()
+      socket.emit('end call button', socketToRemove)
     })
+
 
 
 
