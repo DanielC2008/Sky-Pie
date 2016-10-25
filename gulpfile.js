@@ -23,7 +23,7 @@ var handleError = function(task) {
 };
 
 var customOpts = {
-  entries: ['./public/app.js'],
+  entries: ['./client/app/main.js'],
   debug: true //creates readable 'source maps' of code
 };
 var opts = assign({}, watchify.args, customOpts);
@@ -42,7 +42,7 @@ function bundle() {
     .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
        // Add transformation tasks to the pipeline here.
     .pipe(sourcemaps.write('./')) // writes .map file
-    .pipe(gulp.dest('./public'));
+    .pipe(gulp.dest('./client'));
 }
 gulp.task('browserify', bundle);
 
@@ -51,7 +51,7 @@ gulp.task('browserify', bundle);
   Not optional. You should always be validating your JavaScript
  */
 gulp.task('lint', function() {
-  return gulp.src(['./app.js'])
+  return gulp.src(['./app.main.js'])
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'))
     .on('error', function() { });
@@ -64,7 +64,7 @@ gulp.task('lint', function() {
  */
 gulp.task('watch', function() {
   // Run the link task when any JavaScript file changes
-  gulp.watch(['./app.js'], ['lint']);
+  gulp.watch(['./app/main.js'], ['lint']);
   gutil.log(gutil.colors.bgGreen('Watching for changes...'));
 });
 

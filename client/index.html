@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sky-Pie</title>
+  </head>
+  <body>
+    <div ng-app="Sky-Pie">
+      <div ng-controller="main">
+        <h1>{{title}}</h1>
+        <h2>Welcome {{socket}}!</h2>
+        <h3 ng-if="call">{{call}}
+        <button ng-click="joinRoom(caller)"> Accept </button>
+        <button ng-click="rejectCall(caller)"> Decline </button>
+        </h3>
+        <div>
+          <video id="local-video" height="150" autoplay></video>
+          <video id="remote-video" height="150" autoplay></video>
+        </div>
+        <div>
+          <button ng-click="getUserMedia()">Allow Video</button>
+        </div>  
+        <div> Users Online
+          <div ng-repeat="user in Users">
+            <ul>
+              
+              <li ng-if="user != socket">
+                <button ng-click="callUser(user)"> Call </button>
+                {{user}}
+              </li>
+            </ul>
+          </div>
+        </div>     
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/bundle.js"></script>
+  </body>
+</html>
