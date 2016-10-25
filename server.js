@@ -36,6 +36,7 @@ io.on('connection', socket => {
 	socket.on('join', callersRoom => {
 		room = callersRoom
 		socket.join(callersRoom)
+
 		socket.broadcast.to(callersRoom).emit('room ready')
 	})
 
@@ -69,7 +70,6 @@ io.on('connection', socket => {
   })
 
   socket.on('answer', answer => {
-  	console.log('answer!!!!!!')
     socket.broadcast.to(room).emit('answer', answer)
   });
 

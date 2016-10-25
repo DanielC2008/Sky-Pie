@@ -29,8 +29,8 @@ angular
     const onStream = (stream) => {
       localVideo.volume = 0
       localStream = stream
-      streamUrl = window.URL.createObjectURL(stream)
-      localVideo.src = streamUrl
+      streamUrl = window.URL.createObjectURL(stream) ///// these two in one step
+      localVideo.src = streamUrl 
     }
 
     //user rejected request or err
@@ -59,7 +59,7 @@ angular
       socket.emit('get tokens')
       peerConnection = new rtc.RTCPeerConnection({
         iceServers: [{url: "stun:global.stun.twilio.com:3478?transport=udp" }]
-       })
+      })
     }
 
     const tokenSuccess = (tokens) => {
@@ -72,61 +72,48 @@ angular
     }
  
     const onIceCandidate = event => {
-      if (!event || !event.candidate) {
-        return
+      if(event.candidate){
+          socket.emit('candidate', JSON.stringify(event.candidate))
       }
-      console.log("candidate", event.candidate)
-      socket.emit("candidate", JSON.stringify(event.candidate))
     }
 
     const onCandidate = candidate => {
-      // console.log(peerConnection)
-      // console.log(candidate)
-      let rtcIceCandidate = new RTCIceCandidate(JSON.parse(candidate))
-      peerConnection.addIceCandidate(rtcIceCandidate)
+      if (peerConnection) {
+        let rtcIceCandidate = new RTCIceCandidate(JSON.parse(candidate))
+        peerConnection.addIceCandidate(rtcIceCandidate)
+      }
     }
 
     const onAddStream = event => {
-      // console.log('event', event)
       remoteVideo.src = window.URL.createObjectURL(event.stream)
-      // console.log("last", peerConnection)
     }
 
     const createOffer = () => {
-      // console.log('createOffer')
-      // return () => { //why?
         peerConnection.createOffer((offer) => { ///////////////////////make promise structure
-          // console.log('creating')
           peerConnection.setLocalDescription(offer)
           socket.emit('offer', JSON.stringify(offer)) // no stringify
         },
         (err) => {
-          // console.log(err)
+          console.log(err)
         })
-      // }
     }
 
 
     const createAnswer = (offer) => {
-      // console.log('createAnswer')
-      // return () =>{ //why?
         let sessionDescription = new RTCSessionDescription(JSON.parse(offer))
         peerConnection.setRemoteDescription(sessionDescription)
-        peerConnection.createAnswer( (answer) => { ///////////////////////make promise structure
+        peerConnection.createAnswer( answer => { ///////////////////////make promise structure
           peerConnection.setLocalDescription(answer)
-          // console.log(peerConnection)
           socket.emit('answer', JSON.stringify(answer))
         },
-        (err) =>{
-          // console.log(err)
+        (err) => {
+          console.log(err)
         })
-      // }
     }
 
     const onAnswer = answer => {
-      // console.log('only caller')
-      let sessionDescription = new RTCSessionDescription(JSON.parse(answer))
-      peerConnection.setRemoteDescription(sessionDescription)
+      var rtcAnswer = new RTCSessionDescription(JSON.parse(answer))
+      peerConnection.setRemoteDescription(rtcAnswer)
     }
 
 
@@ -177,13 +164,13 @@ angular
     })
 
     socket.on('offer', ({offer, tokens}) => {
-      // console.log(offer)
         tokenSuccess(tokens)
         createAnswer(offer)
+
     })
 
     socket.on('answer', answer => {
-      onAnswer()
+      onAnswer(answer)
     })
 
 
