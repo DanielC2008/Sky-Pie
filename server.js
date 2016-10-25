@@ -44,22 +44,34 @@ io.on('connection', socket => {
 	})
 
   socket.on('get tokens', () => {
-  	console.log('tokens')
     twilio.tokens.create((err, response) =>{
       if(err){
         console.log(err)
       } else {
-      	let offerOrAnswer = socket.id === room ? 'offer tokens' : 'answer tokens'
-      	console.log("tokes?", offerOrAnswer)
-        socket.emit(`${offerOrAnswer}`, response)
+        socket.emit('offer tokens', response)
       }
     })
   })
 
-  socket.on('offer', (offer) => {
-  	console.log(offer)
-    socket.broadcast.to(room).emit('offer', offer) //check this broadcast
+  socket.on('offer', offer => {
+  	console.log('OFFER')
+  	twilio.tokens.create((err, response) =>{
+      if(err){
+        console.log(err)
+      } else {
+        let offerObj = {
+        	tokens: response,
+        	offer: offer
+        }
+    		socket.broadcast.to(room).emit('offer', offerObj) //check this broadcast
+      }
+    })
   })
+
+  socket.on('answer', answer => {
+  	console.log('answer!!!!!!')
+    socket.broadcast.to(room).emit('answer', answer)
+  });
 
   socket.on('candidate', (candidate) => {
     socket.broadcast.to(room).emit('candidate', candidate) //check this broadcast

@@ -6,16 +6,17 @@ const rtc = require('rtc-everywhere')()
 
 angular
   .module('Sky-Pie', [])
-  .controller('main', function ($scope) {
+  .controller('main', function ($scope) { //////////////function
     let peerConnection
-    let localVideo
+    let localVideo = document.getElementById('local-video')
+    let remoteVideo = document.getElementById('remote-video')
     let localStream
     let streamUrl
     $scope.title = 'Sky-Pie'
 
     //get user media
     $scope.getUserMedia = () => {
-      rtc.getUserMedia({video: true, audio: true},function(err, stream){
+      rtc.getUserMedia({video: true, audio: true},function(err, stream){ ///////function
         if (stream) {
           onStream(stream)
         } else {
@@ -26,7 +27,6 @@ angular
 
     //local video on video tag
     const onStream = (stream) => {
-      localVideo = document.getElementById('local-video')
       localVideo.volume = 0
       localStream = stream
       streamUrl = window.URL.createObjectURL(stream)
@@ -62,58 +62,73 @@ angular
        })
     }
 
-    const tokenSuccess = (offerOrAnswer) => {
-      console.log('success')
-      return (tokens) => {
-        console.log('on success', tokens)
-        peerConnection = new rtc.RTCPeerConnection({
-         iceServers: tokens.iceServers
-        })
-        peerConnection.onicecandidate = onIceCandidate
-        peerConnection.addStream(localStream)
-        offerOrAnswer()
-      }  
+    const tokenSuccess = (tokens) => {
+      peerConnection = new rtc.RTCPeerConnection({
+       iceServers: tokens.iceServers
+      })
+      peerConnection.addStream(localStream)
+      peerConnection.onicecandidate = onIceCandidate
+      peerConnection.onaddstream = onAddStream
     }
  
-    const createOffer = () => {
-      console.log('lets make an offer')
-      peerConnection.createOffer((offer) => { ///////////////////////make promise structure
-      peerConnection.setLocalDescription(offer)
-        socket.emit('offer', JSON.stringify(offer))
-      },
-      (err) => {
-        console.log(err)
-      })
+    const onIceCandidate = event => {
+      if (!event || !event.candidate) {
+        return
+      }
+      console.log("candidate", event.candidate)
+      socket.emit("candidate", JSON.stringify(event.candidate))
     }
 
-    const onOffer = (offer) => {
-      socket.emit('get tokens')
+    const onCandidate = candidate => {
+      // console.log(peerConnection)
+      // console.log(candidate)
+      let rtcIceCandidate = new RTCIceCandidate(JSON.parse(candidate))
+      peerConnection.addIceCandidate(rtcIceCandidate)
     }
+
+    const onAddStream = event => {
+      // console.log('event', event)
+      remoteVideo.src = window.URL.createObjectURL(event.stream)
+      // console.log("last", peerConnection)
+    }
+
+    const createOffer = () => {
+      // console.log('createOffer')
+      // return () => { //why?
+        peerConnection.createOffer((offer) => { ///////////////////////make promise structure
+          // console.log('creating')
+          peerConnection.setLocalDescription(offer)
+          socket.emit('offer', JSON.stringify(offer)) // no stringify
+        },
+        (err) => {
+          // console.log(err)
+        })
+      // }
+    }
+
 
     const createAnswer = (offer) => {
-      return () =>{
+      // console.log('createAnswer')
+      // return () =>{ //why?
         let sessionDescription = new RTCSessionDescription(JSON.parse(offer))
         peerConnection.setRemoteDescription(sessionDescription)
         peerConnection.createAnswer( (answer) => { ///////////////////////make promise structure
           peerConnection.setLocalDescription(answer)
+          // console.log(peerConnection)
           socket.emit('answer', JSON.stringify(answer))
         },
         (err) =>{
-          console.log(err)
+          // console.log(err)
         })
-      }
+      // }
     }
 
-    const onIceCandidate = (event) => {
-      if(event.candidate){
-        socket.emit('candidate', JSON.stringify(event.candidate))
-      }
+    const onAnswer = answer => {
+      // console.log('only caller')
+      let sessionDescription = new RTCSessionDescription(JSON.parse(answer))
+      peerConnection.setRemoteDescription(sessionDescription)
     }
 
-    const onCandidate = (candidate) => {
-      let rtcIceCandidate = new RTCIceCandidate(JSON.parse(candidate))
-      peerConnection.addIceCandidate(rtcIceCandidate)
-  }
 
 
     //socket connected
@@ -152,19 +167,23 @@ angular
       startCall()
     })
     //tokens have been generated
-    socket.on('offer tokens', tokenSuccess(createOffer)) //make sure tokens is being passed
-
-    socket.on('answer tokens', tokens => {
-     tokenSuccess(createAnswer(offer)) // make sure tokens is being passed
-    })
+    socket.on('offer tokens', tokens => { //change socket names
+      tokenSuccess(tokens)
+      createOffer()
+    }) //make sure tokens is being passed
 
     socket.on('candidate', candidate => {
       onCandidate(candidate)
     })
 
-    socket.on('offer', offer => {
-      console.log('offer sent to called')
-      // onOffer(offer)
+    socket.on('offer', ({offer, tokens}) => {
+      // console.log(offer)
+        tokenSuccess(tokens)
+        createAnswer(offer)
+    })
+
+    socket.on('answer', answer => {
+      onAnswer()
     })
 
 
