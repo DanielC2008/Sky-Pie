@@ -6,17 +6,19 @@ const rtc = require('rtc-everywhere')()
 
 angular
   .module('Sky-Pie', [])
-  .controller('main', function ($scope) { //////////////function
+  .controller('main', ($scope) => {
     let peerConnection
     let localVideo = document.getElementById('local-video')
     let remoteVideo = document.getElementById('remote-video')
+    localVideo.volume = 0
     let localStream
     let streamUrl
+
     $scope.title = 'Sky-Pie'
 
     //get user media
     $scope.getUserMedia = () => {
-      rtc.getUserMedia({video: true, audio: true},function(err, stream){ ///////function
+      rtc.getUserMedia( (err, stream) => {
         if (stream) {
           onStream(stream)
         } else {
@@ -27,10 +29,8 @@ angular
 
     //local video on video tag
     const onStream = (stream) => {
-      localVideo.volume = 0
       localStream = stream
-      streamUrl = window.URL.createObjectURL(stream) ///// these two in one step
-      localVideo.src = streamUrl 
+      localVideo.src = window.URL.createObjectURL(stream)
     }
 
     //user rejected request or err
@@ -154,10 +154,10 @@ angular
       startCall()
     })
     //tokens have been generated
-    socket.on('offer tokens', tokens => { //change socket names
+    socket.on('offer tokens', tokens => {
       tokenSuccess(tokens)
       createOffer()
-    }) //make sure tokens is being passed
+    }) 
 
     socket.on('candidate', candidate => {
       onCandidate(candidate)
@@ -166,7 +166,6 @@ angular
     socket.on('offer', ({offer, tokens}) => {
         tokenSuccess(tokens)
         createAnswer(offer)
-
     })
 
     socket.on('answer', answer => {

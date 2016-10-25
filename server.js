@@ -55,7 +55,6 @@ io.on('connection', socket => {
   })
 
   socket.on('offer', offer => {
-  	console.log('OFFER')
   	twilio.tokens.create((err, response) =>{
       if(err){
         console.log(err)
@@ -64,7 +63,7 @@ io.on('connection', socket => {
         	tokens: response,
         	offer: offer
         }
-    		socket.broadcast.to(room).emit('offer', offerObj) //check this broadcast
+    		socket.broadcast.to(room).emit('offer', offerObj)
       }
     })
   })
@@ -74,7 +73,7 @@ io.on('connection', socket => {
   });
 
   socket.on('candidate', (candidate) => {
-    socket.broadcast.to(room).emit('candidate', candidate) //check this broadcast
+    socket.broadcast.to(room).emit('candidate', candidate) 
   })  
 
 	socket.on('disconnect', () => {
