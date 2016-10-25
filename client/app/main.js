@@ -176,9 +176,16 @@ angular
       onAnswer(answer)
     })
 
-    socket.on('in call', () => {
+    socket.on('start call', () => {
       $scope.inCall = true
       $scope.$apply()
     })
+
+    socket.on('end call', () => {
+      $scope.inCall = false
+      $scope.$apply()
+    })
+
+
 
   })

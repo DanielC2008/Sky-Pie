@@ -77,7 +77,7 @@ io.on('connection', socket => {
   })
 
   socket.on('both users configured', () => {
-  	io.to(room).emit('in call')
+  	io.to(room).emit('start call')
   })
 
 
@@ -85,6 +85,7 @@ io.on('connection', socket => {
 		let removeUser = Users.indexOf(`${socket.id}`)
 		Users.splice(removeUser, 1)
 		console.log(`${socket.id} disconnected`)
+		io.to(room).emit('end call')
 		io.emit('user disconnect', Users)
 	})
 })
