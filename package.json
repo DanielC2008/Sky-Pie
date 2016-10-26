@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "postinstall": "gulp default"
+    "postinstall": "gulp browserify"
   },
   "repository": {
     "type": "git",
