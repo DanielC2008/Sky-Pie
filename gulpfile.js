@@ -51,7 +51,7 @@ gulp.task('browserify', bundle);
   Not optional. You should always be validating your JavaScript
  */
 gulp.task('lint', function() {
-  return gulp.src(['./app.main.js'])
+  return gulp.src(['./app/main.js'])
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'))
     .on('error', function() { });
@@ -82,5 +82,5 @@ gulp.task('heroku:production', [
   'gulp-util',
   'gulp-sourcemaps',
   'lodash.assign'
-]);
+], bundle);
 
