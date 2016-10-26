@@ -21,7 +21,7 @@
     "url": "https://github.com/DanielC2008/Sky-Pie/issues"
   },
   "homepage": "https://github.com/DanielC2008/Sky-Pie#readme",
-  "devDependencies": {
+  "dependencies": {
     "bulkify": "^1.4.2",
     "gulp-jshint": "^2.0.1",
     "gulp-sourcemaps": "^2.1.1",
@@ -32,9 +32,7 @@
     "lodash.assign": "^4.2.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.7.0"
-  },
-  "dependencies": {
+    "watchify": "^3.7.0",
     "angular": "^1.5.8",
     "angular-route": "^1.5.8",
     "browserify": "^13.1.1",
