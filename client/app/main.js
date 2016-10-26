@@ -6,7 +6,7 @@ const rtc = require('rtc-everywhere')()
 
 angular
   .module('Sky-Pie', [])
-  .controller('main', ($scope) => {
+  .controller('main', ['$scope', ($scope) => {
     let peerConnection
     let localVideo = document.getElementById('local-video')
     let remoteVideo = document.getElementById('remote-video')
@@ -207,4 +207,4 @@ angular
 
 
 
-  })
+  }])
