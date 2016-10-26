@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "postinstall": "gulp heroku:production"
+    "postinstall": "heroku:production"
   },
   "repository": {
     "type": "git",
