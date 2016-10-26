@@ -6,10 +6,10 @@
   "engines": {
     "node": "6"
   },
-"scripts": {
-  "start": "server.js",
-  "postinstall": "gulp default"
-},
+  "scripts": {
+    "start": "server.js",
+    "postinstall": "gulp default"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DanielC2008/Sky-Pie.git"
@@ -23,7 +23,6 @@
   "homepage": "https://github.com/DanielC2008/Sky-Pie#readme",
   "devDependencies": {
     "bulkify": "^1.4.2",
-    "gulp": "^3.9.1",
     "gulp-jshint": "^2.0.1",
     "gulp-sourcemaps": "^2.1.1",
     "gulp-util": "^3.0.7",
@@ -40,6 +39,7 @@
     "angular-route": "^1.5.8",
     "browserify": "^13.1.1",
     "express": "^4.14.0",
+    "gulp": "^3.9.1",
     "materialize": "^1.0.0",
     "pug": "^2.0.0-beta6",
     "rtc-everywhere": "0.0.5",
