@@ -13,16 +13,20 @@ angular
     localVideo.volume = 0
     let localStream
     let streamUrl
+    let streamArray
+    let constraints = {audio: true, video: true}
 
+    $scope.inCall = false
     $scope.title = 'Sky-Pie'
 
     //get user media
-    $scope.getUserMedia = () => {
-      rtc.getUserMedia( (err, stream) => {
+    const getUserMedia = (constraints) => {
+      rtc.getUserMedia((err, stream) => {
         if (stream) {
           onStream(stream)
         } else {
-  		    streamRejected(err)
+          console.log(err)
+  		    alert('Media Rejected')
         }
       })
 	  }
@@ -33,18 +37,16 @@ angular
       localVideo.src = window.URL.createObjectURL(stream)
     }
 
-    //user rejected request or err
-    const streamRejected = () => {
-    	console.log('media rejected')
-    }
-
     //socket requests another to join their room   
     $scope.callUser = socketToCall => {
+      $scope.caller = socket.id
+      $scope.called = socketToCall
       socket.emit('call', socketToCall)
     }
 
     //called accepts and joins room
     $scope.joinRoom = (caller) => {
+      getUserMedia()
       socket.emit('join', caller)
       $scope.call = null
     }
@@ -89,31 +91,41 @@ angular
     }
 
     const createOffer = () => {
-        peerConnection.createOffer((offer) => { ///////////////////////make promise structure
-          peerConnection.setLocalDescription(offer)
-          socket.emit('offer', JSON.stringify(offer)) // no stringify
-        },
-        (err) => {
-          console.log(err)
-        })
+      peerConnection.createOffer((offer) => { ///////////////////////make promise structure
+        peerConnection.setLocalDescription(offer)
+        socket.emit('offer', JSON.stringify(offer)) // no stringify
+      },
+      (err) => {
+        console.log(err)
+      })
     }
 
 
     const createAnswer = (offer) => {
-        let sessionDescription = new RTCSessionDescription(JSON.parse(offer))
-        peerConnection.setRemoteDescription(sessionDescription)
-        peerConnection.createAnswer( answer => { ///////////////////////make promise structure
-          peerConnection.setLocalDescription(answer)
-          socket.emit('answer', JSON.stringify(answer))
-        },
-        (err) => {
-          console.log(err)
-        })
+      let sessionDescription = new RTCSessionDescription(JSON.parse(offer))
+      peerConnection.setRemoteDescription(sessionDescription)
+      peerConnection.createAnswer( answer => { ///////////////////////make promise structure
+        peerConnection.setLocalDescription(answer)
+        socket.emit('answer', JSON.stringify(answer))
+      },
+      (err) => {
+        console.log(err)
+      })
     }
 
     const onAnswer = answer => {
-      var rtcAnswer = new RTCSessionDescription(JSON.parse(answer))
+      let rtcAnswer = new RTCSessionDescription(JSON.parse(answer))
       peerConnection.setRemoteDescription(rtcAnswer)
+      socket.emit('both users configured')
+    }
+
+    $scope.endCallButton = () => {
+      socket.emit('end call button', $scope.called)
+      //remove user media tracks from user who clicked
+      localStream.getTracks().map((track)=> {
+        track.stop()
+      })
+      $scope.inCall = false
     }
 
 
@@ -132,6 +144,7 @@ angular
 
     //user disconnects from server
     socket.on('user disconnect', Users => {
+      $scope.inCall = false
       $scope.Users = Users
       $scope.$apply()
     })
@@ -139,6 +152,7 @@ angular
     //someone is called
     socket.on('answer or reject', caller => {
       $scope.caller = caller
+      $scope.called = socket.id
       $scope.call = `${$scope.caller} would like to start a Sky-Pie Call with you!`
       $scope.$apply()
     })
@@ -151,6 +165,7 @@ angular
 //connecting video stream
     //room ready
     socket.on('room ready', () => {
+      getUserMedia()
       startCall()
     })
     //tokens have been generated
@@ -171,6 +186,24 @@ angular
     socket.on('answer', answer => {
       onAnswer(answer)
     })
+
+    socket.on('start call', () => {
+      $scope.inCall = true
+      $scope.$apply()
+    })
+
+    socket.on('end call button', socketToRemove => {
+      if (socketToRemove === socket.id) {
+        socket.emit('end call button', socketToRemove)
+      }
+      //remove user media tracks 
+      localStream.getTracks().map((track)=> {
+        track.stop()
+      })
+      $scope.inCall = false
+      $scope.$apply()
+    })
+
 
 
 

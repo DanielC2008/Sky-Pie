@@ -54,6 +54,10 @@ io.on('connection', socket => {
     })
   })
 
+  socket.on('candidate', (candidate) => {
+    socket.broadcast.to(room).emit('candidate', candidate) 
+  })  
+
   socket.on('offer', offer => {
   	twilio.tokens.create((err, response) =>{
       if(err){
@@ -70,16 +74,27 @@ io.on('connection', socket => {
 
   socket.on('answer', answer => {
     socket.broadcast.to(room).emit('answer', answer)
-  });
+  })
 
-  socket.on('candidate', (candidate) => {
-    socket.broadcast.to(room).emit('candidate', candidate) 
-  })  
+  socket.on('both users configured', () => {
+  	io.to(room).emit('start call')
+  })
+
+  socket.on('end call button', socketToRemove => { 
+ 		//only remove socket that was called NOT caller
+ 		//if called remove
+  	if (socket.id === socketToRemove) {
+  		socket.leave(room)
+  	}
+  	//emit to room/update dom	
+    socket.broadcast.to(room).emit('end call button', socketToRemove)
+  })
 
 	socket.on('disconnect', () => {
 		let removeUser = Users.indexOf(`${socket.id}`)
 		Users.splice(removeUser, 1)
 		console.log(`${socket.id} disconnected`)
+		io.to(room).emit('end call')
 		io.emit('user disconnect', Users)
 	})
 })
