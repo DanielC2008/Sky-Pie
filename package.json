@@ -7,9 +7,8 @@
     "node": "6"
   },
 "scripts": {
-  "build": "gulp",
-  "start": "node server.js",
-  "postinstall": "npm run build" // referencing the "build" script above
+  "start": "server.js",
+  "postinstall": "gulp default"
 },
   "repository": {
     "type": "git",
