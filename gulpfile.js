@@ -71,3 +71,16 @@ gulp.task('watch', function() {
 // This task runs when you type `gulp` in the CLI
 gulp.task('default', ['lint', 'watch'], bundle);
 
+gulp.task('heroku:production', [
+  'gulp',
+  'gulp-jshint',
+  'gulp-watch',
+  'watchify',
+  'browserify',
+  'vinyl-source-stream',
+  'vinyl-buffer',
+  'gulp-util',
+  'gulp-sourcemaps',
+  'lodash.assign'
+]);
+
