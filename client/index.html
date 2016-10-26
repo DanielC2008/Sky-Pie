@@ -22,7 +22,7 @@
             <ul>
               
               <li ng-if="user != socket">
-                <button ng-click="callUser(user)"> Call </button>
+                <button ng-hide="inCall" ng-click="callUser(user)"> Call </button>
                 {{user}}
               </li>
             </ul>

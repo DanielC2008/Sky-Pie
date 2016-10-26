@@ -120,11 +120,11 @@ angular
     }
 
     $scope.endCallButton = () => {
+      socket.emit('end call button', $scope.called)
       //remove user media tracks from user who clicked
       localStream.getTracks().map((track)=> {
         track.stop()
       })
-      socket.emit('end call button', $scope.called)
       $scope.inCall = false
     }
 
