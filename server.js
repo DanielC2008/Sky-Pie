@@ -86,7 +86,7 @@ io.on('connection', socket => {
   	if (socket.id === socketToRemove) {
   		socket.leave(room)
   	}
-  	//emit to other user to leave room/update dom	
+  	//emit to room/update dom	
     socket.broadcast.to(room).emit('end call button', socketToRemove)
   })
 

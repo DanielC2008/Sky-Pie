@@ -13,13 +13,15 @@ angular
     localVideo.volume = 0
     let localStream
     let streamUrl
+    let streamArray
+    let constraints = {audio: true, video: true}
 
     $scope.inCall = false
     $scope.title = 'Sky-Pie'
 
     //get user media
-    const getUserMedia = () => {
-      rtc.getUserMedia( (err, stream) => {
+    const getUserMedia = (constraints) => {
+      rtc.getUserMedia((err, stream) => {
         if (stream) {
           onStream(stream)
         } else {
@@ -118,6 +120,10 @@ angular
     }
 
     $scope.endCallButton = () => {
+      //remove user media tracks from user who clicked
+      localStream.getTracks().map((track)=> {
+        track.stop()
+      })
       socket.emit('end call button', $scope.called)
       $scope.inCall = false
     }
@@ -190,6 +196,10 @@ angular
       if (socketToRemove === socket.id) {
         socket.emit('end call button', socketToRemove)
       }
+      //remove user media tracks 
+      localStream.getTracks().map((track)=> {
+        track.stop()
+      })
       $scope.inCall = false
       $scope.$apply()
     })
