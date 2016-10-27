@@ -26,10 +26,10 @@ var customOpts = {
   entries: ['./client/app/main.js'],
   debug: true //creates readable 'source maps' of code
 };
-var opts = assign({}, watchify.args, customOpts);
-var bundler = watchify(browserify(opts));
-bundler.on('update', bundle); // on any dep update, runs the bundler
-bundler.on('log', gutil.log); // output build logs to terminal
+// var opts = assign({}, watchify.args, customOpts);
+// var bundler = watchify(browserify(opts));
+// bundler.on('update', bundle); // on any dep update, runs the bundler
+// bundler.on('log', gutil.log); // output build logs to terminal
 
 function bundle() {
   return bundler.bundle()
@@ -82,5 +82,5 @@ gulp.task('heroku:production', [
   'gulp-util',
   'gulp-sourcemaps',
   'lodash.assign'
-], bundle);
+], bundle );
 
