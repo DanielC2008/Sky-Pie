@@ -21,9 +21,10 @@ let room
 //needs to be before express static
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === 'production' ) {
-    // forceSSL(req, res, next) {
-    if (req.headers['x-forwarded-proto'] !== 'https')
+    // forceSSL(req, res, next) => {
+    if (req.headers['x-forwarded-proto'] !== 'https'){
       res.redirect `https://${req.header[host]}${req.url}`
+    }
   } else {
     next()
   }
