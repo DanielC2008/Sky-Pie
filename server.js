@@ -19,7 +19,7 @@ let room
 //force redirect to https in production for getUserMedia
 //needs to be before express static
 app.use((req, res, next) => {
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'production' && req.protocol !== 'https') {
     forceSSL(req, res, next)
   } else {
     next()
