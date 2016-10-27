@@ -4,7 +4,7 @@ const express = require('express')
 const { Server } = require('http')
 const socketio = require('socket.io')
 const twilio = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN)
-const forceSSL = require('express-force-ssl')
+const forceSSL = require('force-ssl-heroku')
 
 const app = express()
 const server = Server(app)
@@ -13,14 +13,17 @@ const PORT = process.env.PORT || 3000
 const Users = []
 let room
 
+
 //SET 
 
 //USE
 //force redirect to https in production for getUserMedia
 //needs to be before express static
 app.use((req, res, next) => {
-  if (process.env.NODE_ENV === 'production' && req.protocol !== 'https') {
-    forceSSL(req, res, next)
+  if (process.env.NODE_ENV === 'production' ) {
+    // forceSSL(req, res, next) {
+    if (req.headers['x-forwarded-proto'] !== 'https')
+      res.redirect `https://${req.header[host]}${req.url}`
   } else {
     next()
   }
