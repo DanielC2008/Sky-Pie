@@ -8,7 +8,9 @@
   },
   "scripts": {
     "start": "node server.js",
-    "postinstall": "gulp browserify"
+    "browserify": "browserify client/app/main.js -o client/bundle.js",
+    "watchify": "nodemon --exec \"npm run browserify && npm run start\" --ignore client/bundle.js",
+    "postinstall": "npm run browserify"
   },
   "repository": {
     "type": "git",
@@ -22,22 +24,12 @@
   },
   "homepage": "https://github.com/DanielC2008/Sky-Pie#readme",
   "dependencies": {
-    "browserify": "^13.1.1",
-    "bulkify": "^1.4.2",
-    "gulp": "^3.9.1",
-    "gulp-jshint": "^2.0.1",
-    "gulp-sourcemaps": "^2.1.1",
-    "gulp-util": "^3.0.7",
-    "gulp-watch": "^4.3.10",
-    "jshint": "^2.9.3",
-    "jshint-stylish": "^2.2.1",
-    "lodash.assign": "^4.2.0",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.7.0",
     "angular": "^1.5.8",
     "angular-route": "^1.5.8",
+    "browserify": "^13.1.1",
+    "bulkify": "^1.4.2",
     "express": "^4.14.0",
+    "express-force-ssl": "^0.3.2",
     "materialize": "^1.0.0",
     "pug": "^2.0.0-beta6",
     "rtc-everywhere": "0.0.5",
