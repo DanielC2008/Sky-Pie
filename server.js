@@ -4,7 +4,6 @@ const express = require('express')
 const { Server } = require('http')
 const socketio = require('socket.io')
 const twilio = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN)
-const forceSSL = require('express-force-ssl')
 
 const app = express()
 const server = Server(app)
@@ -17,19 +16,6 @@ let room
 //SET 
 
 //USE
-//force redirect to https in production for getUserMedia
-//needs to be before express static
-if (process.env.NODE_ENV === 'production' ) {
-  app.use(forceSSL(req, res, next) => {
-    if (req.headers['x-forwarded-proto'] !== 'https') {
-      res.redirect `https://${req.header[host]}${req.url}`
-    }
-    else {
-      next()
-    }
-  })  
-}
-
 app.use(express.static('client'))
 
 //ROUTES
