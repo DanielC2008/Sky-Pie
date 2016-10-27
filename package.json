@@ -8,7 +8,9 @@
   },
   "scripts": {
     "start": "node server.js",
-    "postinstall": "gulp browserify"
+    "browserify": "browserify client/app/main.js -o client/bundle.js",
+    "watchify": "nodemon --exec \"npm run browserify && npm run start\" --ignore client/bundle.js",
+    "postinstall": "npm run browserify"
   },
   "repository": {
     "type": "git",
