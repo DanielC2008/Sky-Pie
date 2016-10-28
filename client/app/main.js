@@ -7,6 +7,34 @@ const rtc = require('rtc-everywhere')()
 angular
   .module('Sky-Pie', [])
   .controller('main', ['$scope', ($scope) => {
+    
+/////////////CHAT//////////////////
+    $scope.messages = []
+
+    $scope.sendMessage = () => {
+      let message = {
+        author: socket.id,
+        text: $scope.text
+      }
+      $scope.messages.push(message)
+      $scope.text = ''
+      socket.emit('new message', message)
+    }
+
+    //recieving new message
+    socket.on('new message', message => {
+      $scope.messages.push(message)
+      $scope.$apply()
+    })
+
+    const clearMessages = () => {
+      $scope.messages = []
+    }
+
+
+
+
+/////////// WEBRTC/////////////    
     let peerConnection
     let localVideo = document.getElementById('local-video')
     let remoteVideo = document.getElementById('remote-video')
@@ -14,13 +42,12 @@ angular
     let localStream
     let streamUrl
     let streamArray
-    let constraints = {audio: true, video: true}
 
     $scope.inCall = false
     $scope.title = 'Sky-Pie'
 
     //get user media
-    const getUserMedia = (constraints) => {
+    const getUserMedia = () => {
       rtc.getUserMedia((err, stream) => {
         if (stream) {
           onStream(stream)
@@ -100,7 +127,6 @@ angular
       })
     }
 
-
     const createAnswer = (offer) => {
       let sessionDescription = new RTCSessionDescription(JSON.parse(offer))
       peerConnection.setRemoteDescription(sessionDescription)
@@ -126,6 +152,7 @@ angular
         track.stop()
       })
       $scope.inCall = false
+      clearMessages()
     }
 
 
@@ -145,6 +172,7 @@ angular
     //user disconnects from server
     socket.on('user disconnect', Users => {
       $scope.inCall = false
+      clearMessages()
       $scope.Users = Users
       $scope.$apply()
     })
@@ -201,6 +229,7 @@ angular
         track.stop()
       })
       $scope.inCall = false
+      clearMessages()
       $scope.$apply()
     })
 

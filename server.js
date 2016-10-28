@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 3000
 const Users = []
 let room
 
+
 //SET 
 
 //USE
@@ -25,6 +26,7 @@ io.on('connection', socket => {
 	console.log(`Socket connected on: ${socket.id}`)
 	Users.push(socket.id)
 	io.emit('new user', Users)
+
 
 	socket.on('call', socketToCall => { 
 		socket.broadcast.to(socketToCall).emit('answer or reject', socket.id)
@@ -41,6 +43,16 @@ io.on('connection', socket => {
 		socket.broadcast.to(caller).emit('call rejected')
 	})
 
+
+/////////////CHAT/////////////////
+  socket.on('new message', message => {
+    socket.broadcast.to(room).emit('new message', message)
+  })
+
+
+
+
+///////////WEBRTC////////////////
   socket.on('get tokens', () => {
     twilio.tokens.create((err, response) =>{
       if(err){

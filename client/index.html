@@ -16,11 +16,21 @@
           <video id="local-video" height="150" autoplay></video>
           <video id="remote-video" height="150" autoplay></video>
           <button ng-click="endCallButton()">End Call</button>
-        </div>  
+          <div id="chat">
+            <ul>
+              <li ng-repeat="message in messages">
+                {{message.author}}: {{message.text}}
+              </li>
+            </ul>
+            <form ng-submit="sendMessage()">
+              <input type="text" placeholder="message..." ng-model="text">
+              <input type="submit">
+            </form>
+          </div>
+        </div>    
         <div> Users Online
           <div ng-repeat="user in Users">
             <ul>
-              
               <li ng-if="user != socket">
                 <button ng-hide="inCall" ng-click="callUser(user)"> Call </button>
                 {{user}}
