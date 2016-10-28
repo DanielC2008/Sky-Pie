@@ -17,6 +17,7 @@ angular
         text: $scope.text
       }
       $scope.messages.push(message)
+      $scope.text = ''
       socket.emit('new message', message)
     }
 
@@ -26,11 +27,9 @@ angular
       $scope.$apply()
     })
 
-
-
-
-
-
+    const clearMessages = () => {
+      $scope.messages = []
+    }
 
 
 
@@ -153,6 +152,7 @@ angular
         track.stop()
       })
       $scope.inCall = false
+      clearMessages()
     }
 
 
@@ -172,6 +172,7 @@ angular
     //user disconnects from server
     socket.on('user disconnect', Users => {
       $scope.inCall = false
+      clearMessages()
       $scope.Users = Users
       $scope.$apply()
     })
@@ -228,6 +229,7 @@ angular
         track.stop()
       })
       $scope.inCall = false
+      clearMessages()
       $scope.$apply()
     })
 
