@@ -10,16 +10,21 @@ angular
     
 /////////////CHAT//////////////////
     $scope.messages = []
-    
+
     $scope.sendMessage = () => {
-      console.log($scope.messages)
       let message = {
-        author: $scope.author,
+        author: socket.id,
         text: $scope.text
       }
       $scope.messages.push(message)
+      socket.emit('new message', message)
     }
 
+    //recieving new message
+    socket.on('new message', message => {
+      $scope.messages.push(message)
+      $scope.$apply()
+    })
 
 
 
@@ -44,7 +49,6 @@ angular
 
     //get user media
     const getUserMedia = () => {
-      console.log('got it')
       rtc.getUserMedia((err, stream) => {
         if (stream) {
           onStream(stream)
