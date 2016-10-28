@@ -7,6 +7,30 @@ const rtc = require('rtc-everywhere')()
 angular
   .module('Sky-Pie', [])
   .controller('main', ['$scope', ($scope) => {
+    
+/////////////CHAT//////////////////
+    $scope.messages = []
+    
+    $scope.sendMessage = () => {
+      console.log($scope.messages)
+      let message = {
+        author: $scope.author,
+        text: $scope.text
+      }
+      $scope.messages.push(message)
+    }
+
+
+
+
+
+
+
+
+
+
+
+/////////// WEBRTC/////////////    
     let peerConnection
     let localVideo = document.getElementById('local-video')
     let remoteVideo = document.getElementById('remote-video')
@@ -14,13 +38,13 @@ angular
     let localStream
     let streamUrl
     let streamArray
-    let constraints = {audio: true, video: true}
 
     $scope.inCall = false
     $scope.title = 'Sky-Pie'
 
     //get user media
-    const getUserMedia = (constraints) => {
+    const getUserMedia = () => {
+      console.log('got it')
       rtc.getUserMedia((err, stream) => {
         if (stream) {
           onStream(stream)
@@ -99,7 +123,6 @@ angular
         console.log(err)
       })
     }
-
 
     const createAnswer = (offer) => {
       let sessionDescription = new RTCSessionDescription(JSON.parse(offer))
