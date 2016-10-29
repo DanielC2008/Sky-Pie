@@ -10,7 +10,12 @@
       <div ng-controller="main">
       	<div ng-if="!inCall">
 	        <h3>{{title}}</h3>
-	        <h4>Welcome {{socket}}!</h4>
+	        <h4>Welcome {{name ? name : "Anonymous"}}!</h4>
+          <h5>Type your name
+            <form ng-submit="setName(nameToSet)">
+              <input type="text" ng-model="nameToSet">
+            </form>
+          </h5>
         </div>
         <h3 ng-if="call">{{call}}
           <button ng-click="joinRoom(caller)"> Accept </button>

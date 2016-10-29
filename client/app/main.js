@@ -7,7 +7,12 @@ const rtc = require('rtc-everywhere')()
 angular
   .module('Sky-Pie', [])
   .controller('main', ['$scope', ($scope) => {
-    
+
+    $scope.setName = (name) => {
+      $scope.name = name
+      $scope.nameToSet = ''
+    }
+
 /////////////CHAT//////////////////
     $scope.messages = []
 
