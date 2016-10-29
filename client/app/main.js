@@ -6,11 +6,13 @@ const rtc = require('rtc-everywhere')()
 
 angular
   .module('Sky-Pie', [])
-  .controller('main', ['$scope', ($scope) => {
+  .controller('main', ['$scope', ($scope, $setPristine) => {
+
+//////////////USER NAME/////////////
+    $scope.name = 'Anonymous'
 
     $scope.setName = (name) => {
       $scope.name = name
-      $scope.nameToSet = ''
     }
 
 /////////////CHAT//////////////////
@@ -18,7 +20,7 @@ angular
 
     $scope.sendMessage = () => {
       let message = {
-        author: socket.id,
+        author: $scope.name,
         text: $scope.text
       }
       $scope.messages.push(message)
