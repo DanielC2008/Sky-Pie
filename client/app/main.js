@@ -31,9 +31,6 @@ angular
       $scope.messages = []
     }
 
-
-
-
 /////////// WEBRTC/////////////    
     let peerConnection
     let localVideo = document.getElementById('local-video')
@@ -154,8 +151,6 @@ angular
       $scope.inCall = false
       clearMessages()
     }
-
-
 
     //socket connected
   	socket.on('connect', () => {
