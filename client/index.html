@@ -26,9 +26,9 @@
           <div class="col s2" > Users Online
             <div ng-repeat="user in Users">
               <ul>
-                <li ng-if="user != socket">
+                <li ng-if="user.socket != socket">
                   <button ng-hide="inCall" ng-click="callUser(user)"> Call </button>
-                  {{user}}
+                  {{user.name}}
                 </li>
               </ul>
             </div>

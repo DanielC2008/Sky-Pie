@@ -6,10 +6,9 @@ const rtc = require('rtc-everywhere')()
 
 angular
   .module('Sky-Pie', [])
-  .controller('main', ['$scope', ($scope, $setPristine) => {
+  .controller('main', ['$scope', ($scope) => {
 
 //////////////USER NAME/////////////
-    $scope.name = 'Anonymous'
 
     $scope.setName = (name) => {
       $scope.name = name
@@ -69,10 +68,10 @@ angular
     }
 
     //socket requests another to join their room   
-    $scope.callUser = socketToCall => {
+    $scope.callUser = userToCall => {
       $scope.caller = socket.id
-      $scope.called = socketToCall
-      socket.emit('call', socketToCall)
+      $scope.called = userToCall.socket
+      socket.emit('call', userToCall)
     }
 
     //called accepts and joins room
@@ -181,9 +180,9 @@ angular
 
     //someone is called
     socket.on('answer or reject', caller => {
-      $scope.caller = caller
+      $scope.caller = caller.socket
       $scope.called = socket.id
-      $scope.call = `${$scope.caller} would like to start a Sky-Pie Call with you!`
+      $scope.call = `${caller.name} would like to start a Sky-Pie Call with you!`
       $scope.$apply()
     })
 
