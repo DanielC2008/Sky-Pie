@@ -51,16 +51,16 @@ angular
     $scope.title = 'Sky-Pie'
 
     //get user media
-    const getUserMedia = () => {
-      rtc.getUserMedia((err, stream) => {
-        if (stream) {
-          onStream(stream)
-        } else {
-          console.log(err)
-  		    alert('Media Rejected')
-        }
-      })
-	  }
+   //  const getUserMedia = () => {
+   //    getUserMedia((err, stream) => {
+   //      if (stream) {
+   //        onStream(stream)
+   //      } else {
+   //        console.log(err)
+  	// 	    alert('Media Rejected')
+   //      }
+   //    })
+	  // }
 
     //local video on video tag
     const onStream = (stream) => {
@@ -77,9 +77,14 @@ angular
 
     //called accepts and joins room
     $scope.joinRoom = (caller) => {
-      getUserMedia()
-      socket.emit('join', caller)
-      $scope.call = null
+      navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+        .then( stream => {
+          onStream(stream)
+        })
+        .then( () => {
+          socket.emit('join', caller)
+          $scope.call = null
+        })
     }
 
     //called rejects call
@@ -200,8 +205,13 @@ angular
 //connecting video stream
     //room ready
     socket.on('room ready', () => {
-      getUserMedia()
-      startCall()
+      navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+      .then((stream)=>{
+        onStream(stream)
+      })
+      .then( () => {
+        startCall()
+      })
     })
     //tokens have been generated
     socket.on('offer tokens', tokens => {
