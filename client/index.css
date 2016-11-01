@@ -15,3 +15,7 @@ h3 {
 	margin: 0 50px 0 50px;
 }
 
+.ng-cloak {
+	display: none !important;
+}
+
