@@ -7,6 +7,11 @@ h3 {
 	margin: 0 25px;
 }
 
+p {
+	font-size: .84rem;
+	display: inline-block;
+}
+
 .messageBox {
 	border: 1px solid black;
 }
@@ -18,4 +23,3 @@ h3 {
 .ng-cloak {
 	display: none !important;
 }
-
