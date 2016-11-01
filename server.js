@@ -24,18 +24,36 @@ app.use(express.static('client'))
 //SOCKETS
 io.on('connection', socket => {
 	console.log(`Socket connected on: ${socket.id}`)
-	Users.push(socket.id)
+  //set up socket as anonymous user
+  let localUser = {
+    name: 'Anonymous',
+    socket: socket.id
+  }
+	Users.push(localUser)
 	io.emit('new user', Users)
+  //if socket wants a name
+  socket.on('updateName', name => {
+     Users.forEach( (user, index) => {
+      if (user.socket === socket.id) {
+        user.name = name
+      }
+      io.emit('new user', Users)
+    })
+  })
 
 
-	socket.on('call', socketToCall => { 
-		socket.broadcast.to(socketToCall).emit('answer or reject', socket.id)
+/////////////CALL////////////////
+	socket.on('call', userToCall => { 
+    Users.forEach( (user, index) => {
+      if (user.socket === socket.id) {
+		    socket.broadcast.to(userToCall.socket).emit('answer or reject', user)
+      }
+    })
 	})
 
 	socket.on('join', callersRoom => {
 		room = callersRoom
 		socket.join(callersRoom)
-
 		socket.broadcast.to(callersRoom).emit('room ready')
 	})
 
@@ -48,8 +66,6 @@ io.on('connection', socket => {
   socket.on('new message', message => {
     socket.broadcast.to(room).emit('new message', message)
   })
-
-
 
 
 ///////////WEBRTC////////////////
@@ -100,8 +116,11 @@ io.on('connection', socket => {
   })
 
 	socket.on('disconnect', () => {
-		let removeUser = Users.indexOf(`${socket.id}`)
-		Users.splice(removeUser, 1)
+		Users.filter( (user, index) => {
+      if (user.socket === socket.id) {
+        Users.splice(index, 1)
+      }
+    })
 		console.log(`${socket.id} disconnected`)
 		io.to(room).emit('end call')
 		io.emit('user disconnect', Users)

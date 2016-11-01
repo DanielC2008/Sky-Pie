@@ -7,13 +7,20 @@ const rtc = require('rtc-everywhere')()
 angular
   .module('Sky-Pie', [])
   .controller('main', ['$scope', ($scope) => {
+
+//////////////USER NAME/////////////
     
+    $scope.setName = (name) => {
+      $scope.name = name
+      socket.emit('updateName', name)
+    }
+
 /////////////CHAT//////////////////
     $scope.messages = []
 
     $scope.sendMessage = () => {
       let message = {
-        author: socket.id,
+        author: $scope.name,
         text: $scope.text
       }
       $scope.messages.push(message)
@@ -30,9 +37,6 @@ angular
     const clearMessages = () => {
       $scope.messages = []
     }
-
-
-
 
 /////////// WEBRTC/////////////    
     let peerConnection
@@ -65,10 +69,10 @@ angular
     }
 
     //socket requests another to join their room   
-    $scope.callUser = socketToCall => {
+    $scope.callUser = userToCall => {
       $scope.caller = socket.id
-      $scope.called = socketToCall
-      socket.emit('call', socketToCall)
+      $scope.called = userToCall.socket
+      socket.emit('call', userToCall)
     }
 
     //called accepts and joins room
@@ -155,8 +159,6 @@ angular
       clearMessages()
     }
 
-
-
     //socket connected
   	socket.on('connect', () => {
   	  $scope.socket = socket.id
@@ -165,6 +167,11 @@ angular
 
     //new user joins server
     socket.on('new user', Users => {
+      Users.forEach( (user, index) => {
+        if (user.socket === socket.id) {
+          $scope.name = user.name
+        }
+      })  
       $scope.Users = Users
       $scope.$apply()
     })
@@ -179,9 +186,9 @@ angular
 
     //someone is called
     socket.on('answer or reject', caller => {
-      $scope.caller = caller
+      $scope.caller = caller.socket
       $scope.called = socket.id
-      $scope.call = `${$scope.caller} would like to start a Sky-Pie Call with you!`
+      $scope.call = `${caller.name} would like to start a Sky-Pie Call with you!`
       $scope.$apply()
     })
 

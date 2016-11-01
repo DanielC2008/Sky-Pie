@@ -2,46 +2,64 @@
 <html>
   <head>
     <title>Sky-Pie</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/index.css">
   </head>
   <body>
     <div ng-app="Sky-Pie">
       <div ng-controller="main">
-        <h1>{{title}}</h1>
-        <h2>Welcome {{socket}}!</h2>
-        <h3 ng-if="call">{{call}}
-        <button ng-click="joinRoom(caller)"> Accept </button>
-        <button ng-click="rejectCall(caller)"> Decline </button>
-        </h3>
-        <div ng-show="inCall">
-          <video id="local-video" height="150" autoplay></video>
-          <video id="remote-video" height="150" autoplay></video>
-          <button ng-click="endCallButton()">End Call</button>
-          <div id="chat">
-            <ul>
-              <li ng-repeat="message in messages">
-                {{message.author}}: {{message.text}}
-              </li>
-            </ul>
-            <form ng-submit="sendMessage()">
-              <input type="text" placeholder="message..." ng-model="text">
-              <input type="submit">
-            </form>
+        <h3>{{title}}</h3>
+        <div class="callArea">  
+          <div ng-if="!inCall">
+  	          <h4>Welcome {{name}}!</h4>  
+            <div class="row">
+              <h5 class="col s3">Type your name</h5>
+                <form name="nameForm" ng-submit="setName(nameToSet)">
+                  <input  class="col s4" type="text" ng-model="nameToSet" autofocus="true">
+                </form>
+            </div>
           </div>
-        </div>    
-        <div> Users Online
-          <div ng-repeat="user in Users">
-            <ul>
-              <li ng-if="user != socket">
-                <button ng-hide="inCall" ng-click="callUser(user)"> Call </button>
-                {{user}}
-              </li>
-            </ul>
+          <h5 ng-if="call">{{call}}
+            <button ng-click="joinRoom(caller)"> Accept </button>
+            <button ng-click="rejectCall(caller)"> Decline </button>
+          </h5>
+          <div class="row">
+            <div id="underline" class="col s2" >Users Online
+              <div ng-repeat="user in Users">
+                <ul>
+                  <li ng-if="user.socket != socket">
+                    <button ng-hide="inCall" ng-click="callUser(user)"> Call </button>
+                    {{user.name}}
+                  </li>
+                </ul>
+              </div>
+            </div> 
+            <div class="col s7" ng-show="inCall">
+              <video class="col s12" id="remote-video" autoplay></video>
+            </div> 
+            <div class="col s3" ng-show="inCall">
+              <video class="col s12" id="local-video" autoplay></video>
+              <div class="col s12" id="chat">
+                <ul class="messageBox">
+                  <li>Chat!</li>
+                  <li ng-repeat="message in messages">
+                    {{message.author}}: {{message.text}}
+                  </li>
+                </ul>
+                <form ng-submit="sendMessage()">
+                  <input type="text" placeholder="message..." ng-model="text">
+                </form>
+              </div>
+            </div>  
+          </div> 
+          <div class="row" ng-show="inCall">
+            <button class="col s3 offset-s9" ng-click="endCallButton()">End Call</button>
           </div>
-        </div>     
+        </div>
       </div>
     </div>
-
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
     <script src="/bundle.js"></script>
   </body>
 </html>
