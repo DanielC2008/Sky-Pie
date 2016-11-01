@@ -7,6 +7,11 @@ h3 {
 	margin: 0 25px;
 }
 
+p {
+	font-size: .84rem;
+	display: inline-block;
+}
+
 .messageBox {
 	border: 1px solid black;
 }
@@ -14,4 +19,5 @@ h3 {
 .callArea {
 	margin: 0 50px 0 50px;
 }
+
 

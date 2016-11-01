@@ -13,7 +13,7 @@
           <div ng-if="!inCall">
   	          <h4>Welcome {{name}}!</h4>  
             <div class="row">
-              <h5 class="col s3">Type your name</h5>
+              <h5 class="col s3">Type your name<p>(and press enter!)</p></h5>
                 <form name="nameForm" ng-submit="setName(nameToSet)">
                   <input  class="col s4" type="text" ng-model="nameToSet" autofocus="true">
                 </form>
