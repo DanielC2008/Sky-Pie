@@ -9,9 +9,10 @@ angular
   .controller('main', ['$scope', ($scope) => {
 
 //////////////USER NAME/////////////
-
+    
     $scope.setName = (name) => {
       $scope.name = name
+      socket.emit('updateName', name)
     }
 
 /////////////CHAT//////////////////
@@ -166,6 +167,11 @@ angular
 
     //new user joins server
     socket.on('new user', Users => {
+      Users.forEach( (user, index) => {
+        if (user.socket === socket.id) {
+          $scope.name = user.name
+        }
+      })  
       $scope.Users = Users
       $scope.$apply()
     })

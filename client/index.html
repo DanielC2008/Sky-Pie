@@ -8,9 +8,10 @@
   <body>
     <div ng-app="Sky-Pie">
       <div ng-controller="main">
+
       	<div ng-if="!inCall">
 	        <h3>{{title}}</h3>
-	        <h4>Welcome {{name}}!</h4>
+	          <h4>Welcome {{name}}!</h4>  
           <div class="row">
             <h5 class="col s2">Type your name</h5>
               <form name="nameForm" ng-submit="setName(nameToSet)">
@@ -53,7 +54,8 @@
             </div>
             <button ng-click="endCallButton()">End Call</button>
           </div> 
-        </div>         
+        </div> 
+
       </div>
     </div>
 
