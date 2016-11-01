@@ -1,4 +1,17 @@
+body {
+	background: url(clouds.jpg) no-repeat;
+	background-size: cover;
+}
+
+h3 {
+	margin: 0 25px;
+}
+
 .messageBox {
 	border: 1px solid black;
+}
+
+.callArea {
+	margin: 0 50px 0 50px;
 }
 
