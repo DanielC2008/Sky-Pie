@@ -58,20 +58,29 @@ angular
       socket.emit('call', userToCall)
     }
 
+    $scope.endCallButton = () => {
+      socket.emit('end call button', $scope.called)
+      //remove user media tracks from user who clicked
+      localStream.getTracks().map((track)=> {
+        track.stop()
+      })
+      $scope.inCall = false
+      clearMessages()
+    }
+
     //called accepts and joins room
     $scope.joinRoom = (caller) => {
       navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-        .then( stream => {
-          onStream(stream)
-        })
-        .then( () => {
-          socket.emit('join', caller)
-          $scope.call = null
-        })
-        .catch( err =>{
-          alert('Media Rejected')
-        })
-        //////////////////////////////////////////////add catch
+      .then( stream => {
+        onStream(stream)
+      })
+      .then( () => {
+        socket.emit('join', caller)
+        $scope.call = null
+      })
+      .catch( err =>{
+        alert('Media Rejected')
+      })
     }
 
     //called rejects call
@@ -122,7 +131,7 @@ angular
     const createOffer = () => {
       peerConnection.createOffer( offer => { 
         peerConnection.setLocalDescription(offer)
-        socket.emit('offer', JSON.stringify(offer))
+        socket.emit('offer', offer)
       },
       (err) => {
         console.log(err)
@@ -130,11 +139,11 @@ angular
     }
 
     const createAnswer = offer => {
-      let sessionDescription = new RTCSessionDescription(JSON.parse(offer))
+      let sessionDescription = new RTCSessionDescription(offer)
       peerConnection.setRemoteDescription(sessionDescription)
       peerConnection.createAnswer( answer => {
         peerConnection.setLocalDescription(answer)
-        socket.emit('answer', JSON.stringify(answer))
+        socket.emit('answer', answer)
       },
       (err) => {
         console.log(err)
@@ -142,20 +151,11 @@ angular
     }
 
     const onAnswer = answer => {
-      let rtcAnswer = new RTCSessionDescription(JSON.parse(answer))
+      let rtcAnswer = new RTCSessionDescription(answer)
       peerConnection.setRemoteDescription(rtcAnswer)
       socket.emit('both users configured')
     }
 
-    $scope.endCallButton = () => {
-      socket.emit('end call button', $scope.called)
-      //remove user media tracks from user who clicked
-      localStream.getTracks().map((track)=> {
-        track.stop()
-      })
-      $scope.inCall = false
-      clearMessages()
-    }
 
     //socket connected
   	socket.on('connect', () => {
