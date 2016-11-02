@@ -68,6 +68,9 @@ angular
           socket.emit('join', caller)
           $scope.call = null
         })
+        .catch( err =>{
+          alert('Media Rejected')
+        })
         //////////////////////////////////////////////add catch
     }
 
@@ -86,7 +89,7 @@ angular
 
     //////////Start Connection//////////////
     //set up STUN server and request tokens for TURN server
-    const startCall = () => {
+    const requestTokens = () => {
       socket.emit('get tokens')
     }
 
@@ -94,7 +97,6 @@ angular
       peerConnection = new rtc.RTCPeerConnection({
        iceServers: tokens.iceServers
       })
-      console.log('ice', tokens.iceServers);
       peerConnection.addStream(localStream)
       peerConnection.onicecandidate = onIceCandidate
       peerConnection.onaddstream = onAddStream
@@ -118,7 +120,7 @@ angular
     }
 
     const createOffer = () => {
-      peerConnection.createOffer((offer) => { 
+      peerConnection.createOffer( offer => { 
         peerConnection.setLocalDescription(offer)
         socket.emit('offer', JSON.stringify(offer))
       },
@@ -127,7 +129,7 @@ angular
       })
     }
 
-    const createAnswer = (offer) => {
+    const createAnswer = offer => {
       let sessionDescription = new RTCSessionDescription(JSON.parse(offer))
       peerConnection.setRemoteDescription(sessionDescription)
       peerConnection.createAnswer( answer => {
@@ -201,29 +203,32 @@ angular
         onStream(stream)
       })
       .then( () => {
-        startCall()
+        requestTokens()
       })
-       //////////////////////////////////////////////add catch
+      .catch( err =>{
+        alert('Media Rejected')
+      })
     })
+    
     //tokens have been generated
     socket.on('offer tokens', tokens => {
       tokenSuccess(tokens)
       createOffer()
     }) 
-
+    //candidate was sent by other browser
     socket.on('candidate', candidate => {
       onCandidate(candidate)
     })
-
+    //offer recieved
     socket.on('offer', ({offer, tokens}) => {
         tokenSuccess(tokens)
         createAnswer(offer)
     })
-
+    //answer recieved
     socket.on('answer', answer => {
       onAnswer(answer)
     })
-
+    //begin call
     socket.on('start call', () => {
       $scope.inCall = true
       $scope.$apply()
