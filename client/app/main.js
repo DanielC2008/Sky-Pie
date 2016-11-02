@@ -50,24 +50,7 @@ angular
     $scope.inCall = false
     $scope.title = 'Sky-Pie'
 
-    //get user media
-   //  const getUserMedia = () => {
-   //    getUserMedia((err, stream) => {
-   //      if (stream) {
-   //        onStream(stream)
-   //      } else {
-   //        console.log(err)
-  	// 	    alert('Media Rejected')
-   //      }
-   //    })
-	  // }
-
-    //local video on video tag
-    const onStream = (stream) => {
-      localStream = stream
-      localVideo.src = window.URL.createObjectURL(stream)
-    }
-
+    //////////Ask user to join your room////////////
     //socket requests another to join their room   
     $scope.callUser = userToCall => {
       $scope.caller = socket.id
@@ -85,6 +68,7 @@ angular
           socket.emit('join', caller)
           $scope.call = null
         })
+        //////////////////////////////////////////////add catch
     }
 
     //called rejects call
@@ -92,18 +76,25 @@ angular
       socket.emit('call rejected', caller)
       $scope.call = null
     }
+
+    /////////Set stream///////////
+    //local video on video tag
+    const onStream = (stream) => {
+      localStream = stream
+      localVideo.src = window.URL.createObjectURL(stream)
+    }
+
+    //////////Start Connection//////////////
     //set up STUN server and request tokens for TURN server
     const startCall = () => {
       socket.emit('get tokens')
-      peerConnection = new rtc.RTCPeerConnection({
-        iceServers: [{url: "stun:global.stun.twilio.com:3478?transport=udp" }]
-      })
     }
 
     const tokenSuccess = (tokens) => {
       peerConnection = new rtc.RTCPeerConnection({
        iceServers: tokens.iceServers
       })
+      console.log('ice', tokens.iceServers);
       peerConnection.addStream(localStream)
       peerConnection.onicecandidate = onIceCandidate
       peerConnection.onaddstream = onAddStream
@@ -127,9 +118,9 @@ angular
     }
 
     const createOffer = () => {
-      peerConnection.createOffer((offer) => { ///////////////////////make promise structure
+      peerConnection.createOffer((offer) => { 
         peerConnection.setLocalDescription(offer)
-        socket.emit('offer', JSON.stringify(offer)) // no stringify
+        socket.emit('offer', JSON.stringify(offer))
       },
       (err) => {
         console.log(err)
@@ -139,7 +130,7 @@ angular
     const createAnswer = (offer) => {
       let sessionDescription = new RTCSessionDescription(JSON.parse(offer))
       peerConnection.setRemoteDescription(sessionDescription)
-      peerConnection.createAnswer( answer => { ///////////////////////make promise structure
+      peerConnection.createAnswer( answer => {
         peerConnection.setLocalDescription(answer)
         socket.emit('answer', JSON.stringify(answer))
       },
@@ -212,6 +203,7 @@ angular
       .then( () => {
         startCall()
       })
+       //////////////////////////////////////////////add catch
     })
     //tokens have been generated
     socket.on('offer tokens', tokens => {
@@ -249,8 +241,5 @@ angular
       clearMessages()
       $scope.$apply()
     })
-
-
-
 
   }])
