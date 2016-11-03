@@ -42,9 +42,10 @@
                   <video class="col s12" id="local-video" autoplay></video>
                   <div class="col s12" id="chat">
                     <ul class="messageBox">
-                      <li>Chat!</li>
-                      <li ng-repeat="message in messages">
-                        {{message.author}}: {{message.text}}
+                      <li ng-repeat="message in messages | orderBy:'$index':true">
+                        <div ng-class="message.author === name ? 'noClass' : 'alignRight' ">
+                        {{message.author}}: {{message.text}}                        
+                        </div>
                       </li>
                     </ul>
                     <form ng-submit="sendMessage()">
