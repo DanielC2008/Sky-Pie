@@ -122,7 +122,9 @@ io.on('connection', socket => {
       }
     })
 		console.log(`${socket.id} disconnected`)
-		io.to(room).emit('end call')
+    if (room !== undefined) {
+		  io.to(room).emit('end call')  
+    }
 		io.emit('user disconnect', Users)
 	})
 })

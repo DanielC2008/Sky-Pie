@@ -176,7 +176,6 @@ angular
 
     //user disconnects from server
     socket.on('user disconnect', Users => {
-      $scope.inCall = false
       clearMessages()
       $scope.Users = Users
       $scope.$apply()
